@@ -1,0 +1,12 @@
+env:
+  global:
+    - DOCKER_IMAGE=imduffy15/woodpecker-docker-plugin
+services:
+  - docker
+script:
+  - docker build -t $DOCKER_IMAGE:${TRAVIS_COMMIT:0:7} .
+  - docker tag $DOCKER_IMAGE:${TRAVIS_COMMIT:0:7} $DOCKER_IMAGE:latest
+after_success:
+  - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+  - docker push $DOCKER_IMAGE:${TRAVIS_COMMIT:0:7}
+  - docker push $DOCKER_IMAGE:latest
